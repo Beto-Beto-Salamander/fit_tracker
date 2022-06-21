@@ -73,7 +73,7 @@ class BaseDialogTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final responsive = ResponsiveUtils(context);
     return Text(
-      _title.toUpperCase(),
+      _title,
       textAlign: TextAlign.center,
       style: AppTextStyle.bold.copyWith(
         fontSize: responsive.getResponsiveSize(
@@ -94,7 +94,7 @@ class BaseDialogMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     final responsive = ResponsiveUtils(context);
     return Text(
-      _message.toUpperCase(),
+      _message,
       textAlign: TextAlign.center,
       style: AppTextStyle.regular.copyWith(
         color: TextColors.secondary,

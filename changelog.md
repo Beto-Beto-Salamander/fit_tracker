@@ -6,3 +6,4 @@
 - add firebase services for sign in sign up
 - add sign in & sign up cubit
 - add entities for user 
+- finishing auth feature

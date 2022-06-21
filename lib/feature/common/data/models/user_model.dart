@@ -7,7 +7,7 @@ class UserModel {
   final String? gender;
   final int? height;
   final String? dateOfBirth;
-  final List<WeightRecordModel?> weightRecords;
+  final List<WeightRecordModel>? weightRecords;
 
   const UserModel({
     required this.email,
@@ -16,7 +16,7 @@ class UserModel {
     this.gender,
     this.height,
     this.dateOfBirth,
-    required this.weightRecords,
+    this.weightRecords,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
@@ -38,6 +38,6 @@ class UserModel {
         "gender": gender,
         "dateOfBirth": dateOfBirth,
         "height" : height,
-        "weight_records" :  weightRecords.map((e) => e?.toJson()),
+        "weight_records" :  weightRecords?.map((e) => e.toJson()),
       };
 }

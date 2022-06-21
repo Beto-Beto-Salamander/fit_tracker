@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_tracker/feature/feature.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,13 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
+      // if(FirebaseAuth.instance.currentUser != null){
+      //   Navigator.of(context).pushReplacementNamed(PagePath.signUp);
+      // }else{
+      //   Navigator.of(context).pushReplacementNamed(PagePath.signIn);
+      // }
       Navigator.of(context).pushReplacementNamed(PagePath.signIn);
+      
     });
   }
 

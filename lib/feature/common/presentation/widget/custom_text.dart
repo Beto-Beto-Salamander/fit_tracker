@@ -133,12 +133,16 @@ class LongHyperlink extends StatelessWidget {
             ),
             WidgetSpan(
               alignment: PlaceholderAlignment.middle,
-              child: Hyperlink(
-                _link,
-                onTap: _onTap,
-                labelColor: _linkColor,
-                isUnderlined: _isUnderlined,
-                fontSize: _fontSize,
+              child: Padding(
+                padding:
+                    EdgeInsets.only(top: Platform.isAndroid ? AppGap.small : 0),
+                child: Hyperlink(
+                  _link,
+                  onTap: _onTap,
+                  labelColor: _linkColor,
+                  isUnderlined: _isUnderlined,
+                  fontSize: _fontSize,
+                ),
               ),
             )
           ]),

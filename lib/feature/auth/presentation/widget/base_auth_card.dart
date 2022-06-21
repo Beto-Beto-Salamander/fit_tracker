@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fit_tracker/lib.dart';
 import 'package:flutter/material.dart';
 
@@ -24,11 +26,11 @@ class BaseAuthCard extends StatelessWidget {
     final responsive = ResponsiveUtils(context);
     return Container(
       margin: EdgeInsets.only(
-        top: responsive.getResponsiveSize(151),
+        top: responsive.getResponsiveSize(151 - (Platform.isAndroid ? 4 : 0)),
       ),
       padding: EdgeInsets.all(
         responsive.getResponsiveSize(
-          AppGap.medium,
+          AppGap.large,
         ),
       ),
       child: Container(

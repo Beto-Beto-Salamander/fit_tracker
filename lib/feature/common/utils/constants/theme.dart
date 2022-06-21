@@ -12,6 +12,9 @@ class AppTheme {
         selectionColor: TextFieldColors().highlight,
         selectionHandleColor: TextFieldColors.cursor,
       ),
+      colorScheme: theme.colorScheme.copyWith(
+        primary: AppColors.oxfordBlue,
+      ),
       inputDecorationTheme: theme.inputDecorationTheme.copyWith(
         filled: true,
         fillColor: TextFieldColors.enable,

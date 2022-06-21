@@ -1,3 +1,4 @@
-export 'common_dialog.dart';
-export 'error_dialog.dart';
-export 'loading_dialog.dart';
+export 'base_dialog.dart';
+export 'dialog_error.dart';
+export 'dialog_loading.dart';
+export 'dialog_success.dart';

@@ -9,7 +9,7 @@ class UserEntity extends Equatable {
   final String? gender;
   final int? height;
   final String? dateOfBirth;
-  final List<WeightRecordEntity?> weightRecords;
+  final List<WeightRecordEntity>? weightRecords;
 
   const UserEntity({
     required this.email,
@@ -18,7 +18,7 @@ class UserEntity extends Equatable {
     this.gender,
     this.height,
     this.dateOfBirth,
-    required this.weightRecords,
+    this.weightRecords,
   });
 
   @override
@@ -41,7 +41,7 @@ class UserEntity extends Equatable {
     String? gender,
     int? height,
     String? dateOfBirth,
-    List<WeightRecordEntity?>? weightRecords,
+    List<WeightRecordEntity>? weightRecords,
   }) {
     return UserEntity(
       email: email ?? this.email,

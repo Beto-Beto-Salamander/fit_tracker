@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:fit_tracker/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,8 +61,29 @@ class _SignInPageWrapperState extends State<SignInPageWrapper> {
         ),
         body: BlocListener<SignInCubit, SignInState>(
           listener: (context, state) {
-            if (state is SignInError) {
-              log(state.message);
+            if (state is SignInLoading) {
+              BasePopup(context).dialog(
+                child: const DialogLoading(),
+              );
+            } else {
+              Navigator.popUntil(
+                context,
+                ModalRoute.withName(PagePath.signIn),
+              );
+            }
+            if (state is SignInLoaded) {
+              BasePopup(context).dialog(
+                child: DialogSuccess(
+                  message: "Let's start recording your weight!",
+                  onTap: () {},
+                ),
+              );
+            } else if (state is SignInError) {
+              BasePopup(context).dialog(
+                child: DialogError(
+                  message: state.message,
+                ),
+              );
             }
           },
           child: SingleChildScrollView(
@@ -91,9 +110,7 @@ class _SignInPageWrapperState extends State<SignInPageWrapper> {
                     ButtonPrimary(
                       "Sign In",
                       width: double.infinity,
-                      onPressed: () {
-                        _handleSignIn();
-                      },
+                      onPressed: _handleSignIn,
                     ),
                     const Gap(),
                     Center(
