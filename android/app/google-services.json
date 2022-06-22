@@ -7,56 +7,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:411737693537:android:302ca655412385b7183920",
+        "mobilesdk_app_id": "1:411737693537:android:e7ff78ff4ede42d9183920",
         "android_client_info": {
           "package_name": "com.example.fit_tracker"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "411737693537-tljruqvsvapocf1eq1m2gf6rpv4e92h3.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDJevtNBKbGffF0_UkMnOgf9szInmaKggU"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "411737693537-tljruqvsvapocf1eq1m2gf6rpv4e92h3.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "411737693537-2em28tivoi9j58jdg6ngdi7il9ilc5us.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.fitTracker"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:411737693537:android:62f949062693aba4183920",
-        "android_client_info": {
-          "package_name": "com.fit.tracker"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "411737693537-7vcrpck45il509kfq6hhejpsdio9mtrs.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.fit.tracker",
-            "certificate_hash": "a7ed77f45030af82adb552b7ba0cf91821b09e84"
-          }
-        },
         {
           "client_id": "411737693537-tljruqvsvapocf1eq1m2gf6rpv4e92h3.apps.googleusercontent.com",
           "client_type": 3

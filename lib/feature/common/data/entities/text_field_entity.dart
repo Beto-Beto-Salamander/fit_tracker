@@ -79,4 +79,73 @@ class TextFieldEntity {
       },
     ),
   ];
+
+  static final List<TextFieldEntity> profile = [
+    TextFieldEntity(
+      textController: TextEditingController(text: ''),
+      hint: "Email",
+      label: "Email",
+      isEnabled: false,
+      keyboardType: TextInputType.text,
+      focusNode: FocusNode(),
+      validator: (value) {
+        return ValidationBuilder().required().build().call(value);
+      },
+    ),
+    TextFieldEntity(
+      textController: TextEditingController(text: ''),
+      hint: "Name",
+      label: "Name",
+      keyboardType: TextInputType.text,
+      focusNode: FocusNode(),
+      validator: (value) {
+        return ValidationBuilder().required().build().call(value);
+      },
+    ),
+    TextFieldEntity(
+      textController: TextEditingController(text: ''),
+      hint: "Birth Date",
+      label: "Birth Date",
+      isEnabled: false,
+      keyboardType: TextInputType.text,
+      focusNode: FocusNode(),
+      validator: (value) {
+        return ValidationBuilder().required().build().call(value);
+      },
+    ),
+    TextFieldEntity(
+      textController: TextEditingController(text: ''),
+      hint: "Height",
+      label: "Height",
+      keyboardType: TextInputType.number,
+      focusNode: FocusNode(),
+      validator: (value) {
+        return ValidationBuilder().required().build().call(value);
+      },
+    ),
+  ];
+
+  static final List<TextFieldEntity> weightRecord = [
+    TextFieldEntity(
+      textController: TextEditingController(text: ''),
+      hint: "Date",
+      label: "Date",
+      isEnabled: false,
+      textInputAction: TextInputAction.done,
+      focusNode: FocusNode(),
+      validator: (value) {
+        return ValidationBuilder().required().build().call(value);
+      },
+    ),
+    TextFieldEntity(
+      textController: TextEditingController(text: ''),
+      hint: "Weight (kg)",
+      label: "Weight (kg)",
+      keyboardType: TextInputType.number,
+      focusNode: FocusNode(),
+      validator: (value) {
+        return ValidationBuilder().required().build().call(value);
+      },
+    ),
+  ];
 }

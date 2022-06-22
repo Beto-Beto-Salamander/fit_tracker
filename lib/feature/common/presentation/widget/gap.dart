@@ -4,21 +4,22 @@ import 'package:flutter/material.dart';
 class SliverGap extends StatelessWidget {
   const SliverGap({
     Key? key,
-    double? height = AppGap.small,
-    double? width = AppGap.small,
+    double height = AppGap.small,
+    double width = AppGap.small,
   })  : _height = height,
         _width = width,
         super(key: key);
 
-  final double? _height;
-  final double? _width;
+  final double _height;
+  final double _width;
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveUtils(context);
     return SliverToBoxAdapter(
       child: SizedBox(
-        height: _height,
-        width: _width,
+        height: responsive.getResponsiveSize(_height),
+        width: responsive.getResponsiveSize(_width),
       ),
     );
   }
@@ -38,9 +39,10 @@ class Gap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final responsive = ResponsiveUtils(context);
     return SizedBox(
-      height: _height,
-      width: _width,
+      height: responsive.getResponsiveSize(_height),
+      width: responsive.getResponsiveSize(_width),
     );
   }
 }

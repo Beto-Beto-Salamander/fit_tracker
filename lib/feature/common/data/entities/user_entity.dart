@@ -4,7 +4,6 @@ import 'package:fit_tracker/feature/feature.dart';
 
 class UserEntity extends Equatable {
   final String email;
-  final String password;
   final String? name;
   final String? gender;
   final int? height;
@@ -13,7 +12,6 @@ class UserEntity extends Equatable {
 
   const UserEntity({
     required this.email,
-    required this.password,
     this.name,
     this.gender,
     this.height,
@@ -25,7 +23,6 @@ class UserEntity extends Equatable {
   List<Object?> get props {
     return [
       email,
-      password,
       name,
       gender,
       height,
@@ -36,7 +33,6 @@ class UserEntity extends Equatable {
 
   UserEntity copyWith({
     String? email,
-    String? password,
     String? name,
     String? gender,
     int? height,
@@ -45,7 +41,6 @@ class UserEntity extends Equatable {
   }) {
     return UserEntity(
       email: email ?? this.email,
-      password: password ?? this.password,
       name: name ?? this.name,
       gender: gender ?? this.gender,
       height: height ?? this.height,

@@ -49,7 +49,33 @@ class PageRouter {
         {
           return _buildRouter(
             settings: settings,
-            builder: (args) => const HomePage()
+            builder: (args) =>  const HomePage(),
+          );
+        }
+
+      //------------------------------------------------------
+
+      /* Profile */
+      //------------------------------------------------------
+
+      case PagePath.profile:
+        {
+          return _buildRouter(
+            settings: settings,
+            builder: (args) => const ProfilePage()
+          );
+        }
+
+      //------------------------------------------------------
+
+      /* Weight Display */
+      //------------------------------------------------------
+
+      case PagePath.weightDisplay:
+        {
+          return _buildRouter(
+            settings: settings,
+            builder: (args) => const WeightDisplayPage()
           );
         }
 

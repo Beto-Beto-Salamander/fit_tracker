@@ -29,18 +29,19 @@ class _SignInPageWrapperState extends State<SignInPageWrapper> {
   @override
   void initState() {
     super.initState();
-    for (final i in _textFieldlist) {
-      i.textController = TextEditingController();
-    }
+    // for (final i in _textFieldlist) {
+    //   i.textController = TextEditingController(text: "");
+    // }
+    // setState(() {});
   }
 
-  @override
-  void dispose() {
-    for (final i in _textFieldlist) {
-      i.textController.dispose();
-    }
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   for (final i in _textFieldlist) {
+  //     i.textController.clear();
+  //   }
+  //   super.dispose();
+  // }
 
   void _handleSignIn() {
     context.read<SignInCubit>().signIn(
@@ -49,6 +50,10 @@ class _SignInPageWrapperState extends State<SignInPageWrapper> {
             password: _textFieldlist[1].textController.text,
           ),
         );
+    // Navigator.pushReplacementNamed(
+    //   context,
+    //   PagePath.home,
+    // );
   }
 
   @override
@@ -61,21 +66,28 @@ class _SignInPageWrapperState extends State<SignInPageWrapper> {
         ),
         body: BlocListener<SignInCubit, SignInState>(
           listener: (context, state) {
-            if (state is SignInLoading) {
-              BasePopup(context).dialog(
-                child: const DialogLoading(),
-              );
-            } else {
-              Navigator.popUntil(
-                context,
-                ModalRoute.withName(PagePath.signIn),
-              );
-            }
+            // if (state is SignInLoading) {
+            //   BasePopup(context).dialog(
+            //     child: const DialogLoading(),
+            //   );
+            // } else {
+            //   Navigator.popUntil(
+            //     context,
+            //     ModalRoute.withName(PagePath.signIn),
+            //   );
+            // }
             if (state is SignInLoaded) {
               BasePopup(context).dialog(
                 child: DialogSuccess(
-                  message: "Let's start recording your weight!",
-                  onTap: () {},
+                  message:
+                      "You're all set! Please use your credentials to log in.",
+                  onTap: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      PagePath.home,
+                      (route) => false,
+                    );
+                  },
                 ),
               );
             } else if (state is SignInError) {
