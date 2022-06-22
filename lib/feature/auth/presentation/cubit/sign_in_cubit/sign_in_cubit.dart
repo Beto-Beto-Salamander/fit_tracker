@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,9 +33,14 @@ class SignInCubit extends Cubit<SignInState> {
       if (isInputValid()) {
         final user = await FirebaseServices().signIn(params);
         SignInLoaded(user!);
+      } else {
+        emit(
+          const SignInError(MessageConstant.error),
+        );
       }
-    } catch (e) {
-      emit(SignInError(e.toString()));
+    } on FirebaseAuthException catch (e) {
+      log(e.toString());
+      emit(SignInError(e.message.toString()));
     }
   }
 }

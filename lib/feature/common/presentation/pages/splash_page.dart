@@ -14,21 +14,30 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
-      // if(FirebaseAuth.instance.currentUser != null){
-      //   Navigator.of(context).pushReplacementNamed(PagePath.signUp);
-      // }else{
-      //   Navigator.of(context).pushReplacementNamed(PagePath.signIn);
-      // }
-      Navigator.of(context).pushReplacementNamed(PagePath.signIn);
-      
+      if (FirebaseAuth.instance.currentUser != null) {
+        Navigator.of(context).pushReplacementNamed(
+          PagePath.home,
+          arguments: FirebaseAuth.instance.currentUser?.email ?? "",
+        );
+      } else {
+        Navigator.of(context).pushReplacementNamed(PagePath.signIn);
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    final responsive = ResponsiveUtils(context);
+    return Scaffold(
       body: Center(
-        child: Text('Splash'),
+        child: Text(
+          'TRACK FIT',
+          style: AppTextStyle.bold.copyWith(
+              fontSize: responsive.getResponsiveSize(
+                AppFontSize.big,
+              ),
+              color: TextColors.tertiary),
+        ),
       ),
     );
   }

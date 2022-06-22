@@ -1,3 +1,11 @@
+### v0.1.0 (22-06-2022)
+**Added:**
+- store profile to firestore
+- update existing profile
+- store weight to firestore
+- sort weight 
+- delete weight
+
 ### v0.1.0 (21-06-2022)
 **Added:**
 - initial project setup

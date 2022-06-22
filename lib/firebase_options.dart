@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDJevtNBKbGffF0_UkMnOgf9szInmaKggU',
-    appId: '1:411737693537:android:302ca655412385b7183920',
+    appId: '1:411737693537:android:e7ff78ff4ede42d9183920',
     messagingSenderId: '411737693537',
     projectId: 'fittracker-75339',
     storageBucket: 'fittracker-75339.appspot.com',
@@ -62,7 +62,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCYHnSGGxPKsEZRS6A6xL78CmlfTT1Cb_I',
-    appId: '1:411737693537:ios:da4d25ad82ebe7a4183920',
+    appId: '1:411737693537:ios:5709811e60ccd6d5183920',
     messagingSenderId: '411737693537',
     projectId: 'fittracker-75339',
     storageBucket: 'fittracker-75339.appspot.com',
@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyCYHnSGGxPKsEZRS6A6xL78CmlfTT1Cb_I',
-    appId: '1:411737693537:ios:da4d25ad82ebe7a4183920',
+    appId: '1:411737693537:ios:5709811e60ccd6d5183920',
     messagingSenderId: '411737693537',
     projectId: 'fittracker-75339',
     storageBucket: 'fittracker-75339.appspot.com',

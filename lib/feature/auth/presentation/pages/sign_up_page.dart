@@ -30,17 +30,18 @@ class _SignUpPageWrapperState extends State<SignUpPageWrapper> {
   void initState() {
     super.initState();
     for (final i in _textFieldlist) {
-      i.textController = TextEditingController();
+      i.textController = TextEditingController(text: "");
     }
+    setState(() {});
   }
 
-  @override
-  void dispose() {
-    for (final i in _textFieldlist) {
-      i.textController.dispose();
-    }
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   for (final i in _textFieldlist) {
+  //     i.textController.clear();
+  //   }
+  //   super.dispose();
+  // }
 
   void _handleSignUp() {
     context.read<SignUpCubit>().signUp(

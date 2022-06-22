@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_tracker/lib.dart';
 
 part 'sign_up_state.dart';
@@ -29,12 +28,12 @@ class SignUpCubit extends Cubit<SignUpState> {
       }
 
       if (isInputValid()) {
-        final result = await FirebaseServices().signUp(params);
-        log(result.toString());
+        await FirebaseServices().signUp(params);
         emit(SignUpLoaded());
       }
-    } catch (e) {
-      emit(SignUpError(e.toString()));
+    } on FirebaseAuthException catch (e) {
+      
+      emit(SignUpError(e.message.toString()));
     }
   }
 }

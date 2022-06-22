@@ -21,3 +21,17 @@ class LoadingIndicator extends StatelessWidget {
     );
   }
 }
+
+class ScreenSizeLoadingIndicator extends StatelessWidget {
+  const ScreenSizeLoadingIndicator({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final responsive = ResponsiveUtils(context);
+    return Container(
+      height: responsive.getMediaQueryHeight() - kToolbarHeight * 2,
+      alignment: Alignment.center,
+      child: const LoadingIndicator(),
+    );
+  }
+}

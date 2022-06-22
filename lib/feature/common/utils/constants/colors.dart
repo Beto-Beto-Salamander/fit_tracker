@@ -14,6 +14,8 @@ class AppColors {
 
 class WrapperColors {
   static const background = AppColors.oxfordBlue;
+  static const white = AppColors.white;
+  static const card = AppColors.oxfordBlue;
 }
 
 class AppBarColors {
@@ -23,11 +25,14 @@ class AppBarColors {
 class TextColors {
   static const primary = AppColors.oxfordBlue;
   static const secondary = AppColors.veryLightBlue;
+  static const tertiary = AppColors.white;
+  static const quarternary = AppColors.lemonCurry;
 }
 
 class ButtonColors {
   static const primary = AppColors.oxfordBlue;
   static const secondary = AppColors.lemonCurry;
+  static const tertiary = AppColors.white;
 }
 
 class ButtonTextColors {
@@ -37,7 +42,7 @@ class ButtonTextColors {
 
 class TextFieldColors {
   static const enable = AppColors.white;
-  static const disable = AppColors.manatee;
+  static const disable = AppColors.lightPeriwinkle;
   static const error = AppColors.red;
   static const hint = AppColors.veryLightBlue;
   static const text = AppColors.oxfordBlue;
@@ -49,13 +54,14 @@ class TextFieldColors {
 
 class TextFieldStateColors {
   static const enable = AppColors.oxfordBlue;
-  static const focused = AppColors.oxfordBlue;
-  static const disable = AppColors.manatee;
+  static const focused = AppColors.lemonCurry;
+  static const disable = AppColors.oxfordBlue;
   static const error = AppColors.red;
 }
 
 class StateColors {
   static const success = AppColors.green;
+  static const selected = AppColors.green;
   static const error = AppColors.red;
   static const warning = AppColors.lemonCurry;
 }

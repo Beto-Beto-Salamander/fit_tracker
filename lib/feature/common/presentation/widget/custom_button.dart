@@ -318,8 +318,6 @@ class ButtonPrimaryWithIcon extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _icon,
-              const Gap(),
               Text(
                 _label,
                 style: TextStyle(
@@ -332,6 +330,8 @@ class ButtonPrimaryWithIcon extends StatelessWidget {
                 textAlign: _isCenterLabel ? TextAlign.center : TextAlign.start,
                 overflow: TextOverflow.ellipsis,
               ),
+              const Gap(),
+              _icon,
             ],
           ),
         ),
@@ -357,8 +357,6 @@ class ButtonPrimaryWithIcon extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _icon,
-              const Gap(),
               Text(
                 _label,
                 style: TextStyle(
@@ -371,6 +369,8 @@ class ButtonPrimaryWithIcon extends StatelessWidget {
                 textAlign: _isCenterLabel ? TextAlign.center : TextAlign.start,
                 overflow: TextOverflow.ellipsis,
               ),
+              const Gap(),
+              _icon,
             ],
           ),
         ),

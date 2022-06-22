@@ -5,13 +5,13 @@ class DialogSuccess extends StatelessWidget {
   const DialogSuccess({
     Key? key,
     required String message,
-    VoidCallback? onTap,
+    required Function() onTap,
   })  : _message = message,
         _onTap = onTap,
         super(key: key);
 
   final String _message;
-  final VoidCallback? _onTap;
+  final Function() _onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +39,7 @@ class DialogSuccess extends StatelessWidget {
             "Got It!",
             buttonColor: StateColors.success,
             onPressed: () {
-              _onTap?.call();
-              Navigator.pop(context);
+              _onTap();
             },
           ),
         ),
