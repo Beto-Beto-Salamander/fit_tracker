@@ -28,7 +28,9 @@ class WeightDisplayPageWrapper extends StatefulWidget {
 }
 
 class _WeightDisplayPageWrapperState extends State<WeightDisplayPageWrapper> {
-  void _handleOnTapList(DeleteWeightParams params) {
+  final TextFieldEntity _textFieldEntity = TextFieldEntity.weight;
+
+  void _handleDeleteWeight(DeleteWeightParams params) {
     BasePopup(context).dialog(
       child: DialogConfirmation(
         title: "Delete this one ?",
@@ -37,6 +39,37 @@ class _WeightDisplayPageWrapperState extends State<WeightDisplayPageWrapper> {
         negativeButtonText: "No, cancel",
         positiveButtonAction: () async {
           context.read<FirestoreCubit>().deleteWeight(params);
+          Navigator.pop(context, true);
+        },
+        negativeButtonAction: () {
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
+  void _handleUpdateWeight(WeightRecordEntity data) {
+    BasePopup(context).dialog(
+      child: DialogTextField(
+        title: "Update this one ?",
+        message: "Please enter the new value",
+        positiveButtonText: "Submit",
+        negativeButtonText: "Cancel",
+        textFieldEntity: _textFieldEntity,
+        positiveButtonAction: () async {
+          context.read<FirestoreCubit>().updateWeight(
+                WeightRecordEntity(
+                  weight: data.weight,
+                  recordedDate: data.recordedDate,
+                  location: data.location,
+                ),
+                WeightRecordEntity(
+                  weight: int.parse(_textFieldEntity.textController.text),
+                  recordedDate: data.recordedDate,
+                  location: data.location,
+                ),
+              );
+          _textFieldEntity.textController.clear();
           Navigator.pop(context, true);
         },
         negativeButtonAction: () {
@@ -98,8 +131,13 @@ class _WeightDisplayPageWrapperState extends State<WeightDisplayPageWrapper> {
                             weightRecord: record,
                             index: index,
                             onTapDelete: () {
-                              _handleOnTapList(
+                              _handleDeleteWeight(
                                 DeleteWeightParams(data: record!),
+                              );
+                            },
+                            onTapEdit: () {
+                              _handleUpdateWeight(
+                                record!,
                               );
                             },
                           );

@@ -107,4 +107,32 @@ class FirestoreCubit extends Cubit<FirestoreState> {
       emit(FirestoreError(e.message.toString()));
     }
   }
+
+  Future<void> updateWeight(WeightRecordEntity oldValue, WeightRecordEntity newValue) async {
+    try {
+      emit(FirestoreLoading());
+      if (await FirestoreServices().isExist()) {
+        await FirestoreServices().deleteWeight(
+          DeleteWeightParams(data: oldValue),
+        );
+        await FirestoreServices().storeWeight(
+          StoreWeightParams(
+            data: newValue,
+          ),
+        );
+        final result = await FirestoreServices().get();
+        final entity = result.toEntity();
+        emit(
+          FirestoreLoaded(user: entity),
+        );
+      } else {
+        emit(
+          const FirestoreError(MessageConstant.error),
+        );
+      }
+    } on FirebaseException catch (e) {
+      log(e.toString());
+      emit(FirestoreError(e.message.toString()));
+    }
+  }
 }

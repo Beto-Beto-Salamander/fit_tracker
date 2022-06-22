@@ -7,14 +7,17 @@ class WeightDisplayRow extends StatelessWidget {
     WeightRecordEntity? weightRecord,
     required int index,
     required Function() onTapDelete,
+    required Function() onTapEdit,
   })  : _weightRecord = weightRecord,
         _index = index,
         _onTapDelete = onTapDelete,
+        _onTapEdit = onTapEdit,
         super(key: key);
 
   final WeightRecordEntity? _weightRecord;
   final int _index;
   final Function() _onTapDelete;
+  final Function() _onTapEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +90,22 @@ class WeightDisplayRow extends StatelessWidget {
             backgroundColor: AppColors.red,
             child: Icon(
               Icons.delete,
+              color: AppColors.white,
+              size: responsive.getResponsiveSize(
+                AppIconSize.small,
+              ),
+            ),
+          ),
+        ),
+        const Gap(),
+        Expanded(
+          flex: 1,
+          child: ButtonIcon(
+            onTap: _onTapEdit,
+            buttonSize: AppButtonSize.small,
+            backgroundColor: AppColors.manatee,
+            child: Icon(
+              Icons.edit_rounded,
               color: AppColors.white,
               size: responsive.getResponsiveSize(
                 AppIconSize.small,
