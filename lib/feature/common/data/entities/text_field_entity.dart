@@ -148,4 +148,15 @@ class TextFieldEntity {
       },
     ),
   ];
+
+  static final TextFieldEntity weight = TextFieldEntity(
+    textController: TextEditingController(text: ''),
+    hint: "Weight (kg)",
+    label: "Weight (kg)",
+    keyboardType: TextInputType.number,
+    focusNode: FocusNode(),
+    validator: (value) {
+      return ValidationBuilder().required().build().call(value);
+    },
+  );
 }
