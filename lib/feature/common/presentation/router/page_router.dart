@@ -49,7 +49,7 @@ class PageRouter {
         {
           return _buildRouter(
             settings: settings,
-            builder: (args) =>  const HomePage(),
+            builder: (args) =>  HomePage(args: args as String? ?? "",),
           );
         }
 

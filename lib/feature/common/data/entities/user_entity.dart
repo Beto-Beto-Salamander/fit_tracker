@@ -49,6 +49,31 @@ class UserEntity extends Equatable {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'name': name,
+      'gender': gender,
+      'height': height,
+      'date_of_birth': dateOfBirth,
+      'weight_records': weightRecords?.map((e) => e.toJson()),
+    };
+  }
+
+  factory UserEntity.fromMap(Map<String, dynamic> map) {
+    return UserEntity(
+        email: map['email'] as String,
+        name: map['name'] as String? ?? "-",
+        gender: map['gender'] as String? ?? "-",
+        height: map['height'] as int? ?? 0,
+        dateOfBirth: map['date_of_birth'] as String? ?? "-",
+        weightRecords: (map['weight_records'] as List?)
+            ?.map(
+              (e) => WeightRecordEntity.fromMap(e as Map<String, Object?>),
+            )
+            .toList());
+  }
+
   @override
   bool get stringify => true;
 }

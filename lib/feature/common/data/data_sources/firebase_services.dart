@@ -4,11 +4,11 @@ import 'package:fit_tracker/lib.dart';
 class FirebaseServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  static String? currentUser() {
-    return FirebaseAuth.instance.currentUser?.email;
+  static User? currentUser() {
+    return FirebaseAuth.instance.currentUser;
   }
 
-  Future<User?> signIn(AuthParams params) async {
+  Future<User?> login(AuthParams params) async {
     final result = await _auth.signInWithEmailAndPassword(
       email: params.email,
       password: params.password,
@@ -24,7 +24,7 @@ class FirebaseServices {
     return result;
   }
 
-  Future<void> logOut() async {
+  Future<void> logout() async {
     await _auth.signOut();
   }
 }

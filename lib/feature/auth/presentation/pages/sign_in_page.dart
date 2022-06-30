@@ -1,3 +1,4 @@
+import 'package:fit_tracker/di_container.dart';
 import 'package:fit_tracker/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +9,7 @@ class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SignInCubit(),
+      create: (context) => AuthCubit(sl()),
       child: const SignInPageWrapper(),
     );
   }
@@ -44,7 +45,7 @@ class _SignInPageWrapperState extends State<SignInPageWrapper> {
   // }
 
   void _handleSignIn() {
-    context.read<SignInCubit>().signIn(
+    context.read<AuthCubit>().login(
           AuthParams(
             email: _textFieldlist[0].textController.text,
             password: _textFieldlist[1].textController.text,
@@ -64,23 +65,22 @@ class _SignInPageWrapperState extends State<SignInPageWrapper> {
           elevation: 0,
           toolbarHeight: 0,
         ),
-        body: BlocListener<SignInCubit, SignInState>(
+        body: BlocListener<AuthCubit, AuthState>(
           listener: (context, state) {
-            // if (state is SignInLoading) {
-            //   BasePopup(context).dialog(
-            //     child: const DialogLoading(),
-            //   );
-            // } else {
-            //   Navigator.popUntil(
-            //     context,
-            //     ModalRoute.withName(PagePath.signIn),
-            //   );
-            // }
-            if (state is SignInLoaded) {
+            if (state is AuthLoading) {
+              BasePopup(context).dialog(
+                child: const DialogLoading(),
+              );
+            } else {
+              Navigator.popUntil(
+                context,
+                ModalRoute.withName(PagePath.signIn),
+              );
+            }
+            if (state is AuthLoaded) {
               BasePopup(context).dialog(
                 child: DialogSuccess(
-                  message:
-                      "You're all set! Please use your credentials to log in.",
+                  message: "Welcome back!",
                   onTap: () {
                     Navigator.pushNamedAndRemoveUntil(
                       context,
@@ -90,10 +90,10 @@ class _SignInPageWrapperState extends State<SignInPageWrapper> {
                   },
                 ),
               );
-            } else if (state is SignInError) {
+            } else if (state is AuthError) {
               BasePopup(context).dialog(
                 child: DialogError(
-                  message: state.message,
+                  message: state.failure?.message ?? "-",
                 ),
               );
             }

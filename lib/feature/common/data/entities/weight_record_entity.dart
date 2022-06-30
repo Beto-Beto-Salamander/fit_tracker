@@ -28,6 +28,22 @@ class WeightRecordEntity extends Equatable {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'weight': weight,
+      'recorded_date': recordedDate,
+      'location': location.toJson(),
+    };
+  }
+
+  static WeightRecordEntity fromMap(Map<String, dynamic> map) {
+    return WeightRecordEntity(
+      weight: map['weight'] as int,
+      recordedDate: map['recorded_date'] as String,
+      location: LocationCoordinateEntity.fromMap(map['location'] as Map<String, dynamic>),
+    );
+  }
+
   @override
   bool get stringify => true;
 

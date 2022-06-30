@@ -1,3 +1,4 @@
+import 'package:fit_tracker/di_container.dart';
 import 'package:fit_tracker/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +9,7 @@ class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SignUpCubit(),
+      create: (context) => AuthCubit(sl()),
       child: const SignUpPageWrapper(),
     );
   }
@@ -44,7 +45,7 @@ class _SignUpPageWrapperState extends State<SignUpPageWrapper> {
   // }
 
   void _handleSignUp() {
-    context.read<SignUpCubit>().signUp(
+    context.read<AuthCubit>().signup(
           AuthParams(
             email: _textFieldlist[0].textController.text,
             password: _textFieldlist[1].textController.text,
@@ -60,9 +61,9 @@ class _SignUpPageWrapperState extends State<SignUpPageWrapper> {
           elevation: 0,
           toolbarHeight: 0,
         ),
-        body: BlocListener<SignUpCubit, SignUpState>(
+        body: BlocListener<AuthCubit, AuthState>(
           listener: (context, state) {
-            if (state is SignUpLoading) {
+            if (state is AuthLoading) {
               BasePopup(context).dialog(
                 child: const DialogLoading(),
               );
@@ -72,7 +73,7 @@ class _SignUpPageWrapperState extends State<SignUpPageWrapper> {
                 ModalRoute.withName(PagePath.signUp),
               );
             }
-            if (state is SignUpLoaded) {
+            if (state is AuthLoaded) {
               BasePopup(context).dialog(
                 child: DialogSuccess(
                   message:
@@ -86,10 +87,10 @@ class _SignUpPageWrapperState extends State<SignUpPageWrapper> {
                   },
                 ),
               );
-            } else if (state is SignUpError) {
+            } else if (state is AuthError) {
               BasePopup(context).dialog(
                 child: DialogError(
-                  message: state.message,
+                  message: state.failure?.message ?? "",
                 ),
               );
             }

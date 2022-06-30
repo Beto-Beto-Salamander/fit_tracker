@@ -1,5 +1,4 @@
-import 'package:fit_tracker/feature/common/presentation/widget/dialog/dialog_confirmation.dart';
-import 'package:fit_tracker/feature/profile/presentation/cubit/firestore_cubit.dart';
+import 'package:fit_tracker/di_container.dart';
 import 'package:fit_tracker/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,8 +11,15 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => FirestoreCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ProfileCubit(sl())..get(),
+        ),
+        BlocProvider(
+          create: (context) => AuthCubit(sl()),
+        ),
+      ],
       child: const ProfilePageWrapper(),
     );
   }
@@ -28,7 +34,8 @@ class ProfilePageWrapper extends StatefulWidget {
   State<ProfilePageWrapper> createState() => _ProfilePageWrapperState();
 }
 
-class _ProfilePageWrapperState extends State<ProfilePageWrapper> {
+class _ProfilePageWrapperState extends State<ProfilePageWrapper>
+    with AutomaticKeepAliveClientMixin {
   //Form
   final List<TextFieldEntity> _textFieldlist = TextFieldEntity.profile;
   final GlobalKey _formKey = GlobalKey<FormState>();
@@ -46,36 +53,36 @@ class _ProfilePageWrapperState extends State<ProfilePageWrapper> {
       i.textController = TextEditingController();
     }
     _initTextField();
+
+    setState(() {});
   }
 
   void _initTextField() async {
-    if (await FirestoreServices().isExist()) {
-      final user = await FirestoreServices().get();
+    final user = sl<UserCubit>().state.user;
+    if (user?.dateOfBirth.toString().trim().isNotEmpty ?? true) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _textFieldlist[0].textController.text =
-            FirebaseServices.currentUser() ?? "";
-        _textFieldlist[1].textController.text = user.name ?? "-";
+        _textFieldlist[0].textController.text = user?.email ?? "";
+        _textFieldlist[1].textController.text = user?.name ?? "-";
         _textFieldlist[2].textController.text =
-            DateTime.parse(user.dateOfBirth ?? "")
-                .getDateFullFormat()
-                .toString();
-        _textFieldlist[3].textController.text = user.height.toString();
-        _isMale = user.gender == "male";
+            (user?.dateOfBirth.toString().trim().isEmpty ?? true)
+                ? "-"
+                : DateTime.parse(user?.dateOfBirth ?? "")
+                    .getDateFullFormat()
+                    .toString();
+        _textFieldlist[3].textController.text = (user?.height ?? 0).toString();
+        _isMale = user?.gender == "male";
       });
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _textFieldlist[0].textController.text =
-            FirebaseServices.currentUser() ?? "";
+        _textFieldlist[0].textController.text = user?.email ?? "-";
       });
     }
-    setState(() {});
   }
 
   void _handleBirthDate() {
     FocusUtils(context).unfocus();
     context.selectDate(
       initialDate: DateTime.now(),
-      first: DateTime(1930),
       onPicked: (value) {
         if (value != null) {
           _birthDate = value;
@@ -89,21 +96,31 @@ class _ProfilePageWrapperState extends State<ProfilePageWrapper> {
 
   void _handleSubmit() {
     FocusUtils(context).unfocus();
-    context.read<FirestoreCubit>().store(
-          StoreParams(
-            user: UserEntity(
-              email: FirebaseServices.currentUser() ?? "",
+    final user = sl<UserCubit>().state.user;
+    if (user?.dateOfBirth.toString().trim().isNotEmpty ?? true) {
+      context.read<ProfileCubit>().update(
+            UserEntity(
+              email: user?.email ?? "-",
               name: _textFieldlist[1].textController.text,
               dateOfBirth:
                   (_birthDate ?? DateTime.now()).getDateOnly().toString(),
               gender: _isMale ? "male" : "female",
               height: int.parse(_textFieldlist[3].textController.text),
-              weightRecords: const [
-                
-              ],
             ),
-          ),
-        );
+          );
+    } else {
+      context.read<ProfileCubit>().store(
+            UserEntity(
+              email: user?.email ?? "-",
+              name: _textFieldlist[1].textController.text,
+              dateOfBirth:
+                  (_birthDate ?? DateTime.now()).getDateOnly().toString(),
+              gender: _isMale ? "male" : "female",
+              height: int.parse(_textFieldlist[3].textController.text),
+              weightRecords: const [],
+            ),
+          );
+    }
   }
 
   void _handleLogout() {
@@ -114,7 +131,7 @@ class _ProfilePageWrapperState extends State<ProfilePageWrapper> {
         positiveButtonText: "Yes, logout",
         negativeButtonText: "No, cancel",
         positiveButtonAction: () async {
-          await FirebaseServices().logOut();
+          context.read<AuthCubit>().logout();
           Navigator.pushNamedAndRemoveUntil(
             context,
             PagePath.signIn,
@@ -130,11 +147,12 @@ class _ProfilePageWrapperState extends State<ProfilePageWrapper> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final responsive = ResponsiveUtils(context);
     return ScaffoldWrapper(
       child: Scaffold(
         backgroundColor: WrapperColors.white,
-        appBar: AppBarSecondary(
+        appBar: AppBarPrimary(
           "Profile Page",
           onTapBack: () {
             Navigator.pop(context);
@@ -158,9 +176,9 @@ class _ProfilePageWrapperState extends State<ProfilePageWrapper> {
             ),
           ),
         ),
-        body: BlocListener<FirestoreCubit, FirestoreState>(
+        body: BlocListener<ProfileCubit, ProfileState>(
           listener: (context, state) {
-            if (state is FirestoreLoading) {
+            if (state is ProfileLoading) {
               BasePopup(context).dialog(
                 child: const DialogLoading(),
               );
@@ -170,7 +188,7 @@ class _ProfilePageWrapperState extends State<ProfilePageWrapper> {
                 ModalRoute.withName(PagePath.profile),
               );
             }
-            if (state is FirestoreLoaded) {
+            if (state is ProfileLoaded) {
               BasePopup(context).dialog(
                 child: DialogSuccess(
                   message: "Let's start recording your weight!",
@@ -183,10 +201,10 @@ class _ProfilePageWrapperState extends State<ProfilePageWrapper> {
                   },
                 ),
               );
-            } else if (state is FirestoreError) {
+            } else if (state is ProfileError) {
               BasePopup(context).dialog(
                 child: DialogError(
-                  message: state.message,
+                  message: state.failure?.message ?? "",
                 ),
               );
             }
@@ -199,129 +217,116 @@ class _ProfilePageWrapperState extends State<ProfilePageWrapper> {
                     AppGap.medium,
                   ),
                 ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      AppBorderRadius.medium,
-                    ),
-                    color: WrapperColors.white,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: responsive.getResponsiveSize(
-                      AppGap.medium,
-                    ),
-                  ),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Gap(
-                          height: AppGap.large,
-                        ),
-                        //Email
-                        CustomTextFormField(
-                          textFieldEntity: _textFieldlist[0],
-                          backgroundDisable: TextFieldColors.disable,
-                        ),
-                        const Gap(
-                          height: AppGap.medium,
-                        ),
-                        //Name
-                        CustomTextFormField(
-                          textFieldEntity: _textFieldlist[1],
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Gap(
+                        height: AppGap.large,
+                      ),
+                      //Email
+                      CustomTextFormField(
+                        textFieldEntity: _textFieldlist[0],
+                        backgroundDisable: TextFieldColors.disable,
+                      ),
+                      const Gap(
+                        height: AppGap.medium,
+                      ),
+                      //Name
+                      CustomTextFormField(
+                        textFieldEntity: _textFieldlist[1],
+                        backgroundDisable: AppColors.white,
+                      ),
+                      const Gap(
+                        height: AppGap.medium,
+                      ),
+                      //BirthDate
+                      GestureDetector(
+                        onTap: _handleBirthDate,
+                        child: CustomTextFormField(
+                          textFieldEntity: _textFieldlist[2],
                           backgroundDisable: AppColors.white,
                         ),
-                        const Gap(
-                          height: AppGap.medium,
-                        ),
-                        //BirthDate
-                        GestureDetector(
-                          onTap: _handleBirthDate,
-                          child: CustomTextFormField(
-                            textFieldEntity: _textFieldlist[2],
-                            backgroundDisable: AppColors.white,
+                      ),
+                      const Gap(
+                        height: AppGap.medium,
+                      ),
+                      //Height
+                      CustomTextFormField(
+                        textFieldEntity: _textFieldlist[3],
+                        formatter: [
+                          FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                        ],
+                      ),
+                      const Gap(
+                        height: AppGap.medium,
+                      ),
+                      Text(
+                        "Gender",
+                        style: AppTextStyle.semiBold.copyWith(),
+                      ),
+                      const Gap(
+                        height: AppGap.normal,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ButtonPrimary(
+                              "Male",
+                              buttonColor: _isMale
+                                  ? ButtonColors.secondary
+                                  : ButtonColors.tertiary,
+                              borderColor: _isMale
+                                  ? ButtonColors.secondary
+                                  : ButtonColors.primary,
+                              labelColor: _isMale
+                                  ? TextColors.tertiary
+                                  : TextColors.primary,
+                              onPressed: () {
+                                setState(() {
+                                  FocusUtils(context).unfocus();
+                                  _isMale = true;
+                                });
+                              },
+                            ),
                           ),
-                        ),
-                        const Gap(
-                          height: AppGap.medium,
-                        ),
-                        //Height
-                        CustomTextFormField(
-                          textFieldEntity: _textFieldlist[3],
-                          formatter: [
-                            FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-                          ],
-                        ),
-                        const Gap(
-                          height: AppGap.medium,
-                        ),
-                        Text(
-                          "Gender",
-                          style: AppTextStyle.semiBold.copyWith(),
-                        ),
-                        const Gap(
-                          height: AppGap.normal,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ButtonPrimary(
-                                "Male",
-                                buttonColor: _isMale
-                                    ? ButtonColors.secondary
-                                    : ButtonColors.tertiary,
-                                borderColor: _isMale
-                                    ? ButtonColors.secondary
-                                    : ButtonColors.primary,
-                                labelColor: _isMale
-                                    ? TextColors.tertiary
-                                    : TextColors.primary,
-                                onPressed: () {
-                                  setState(() {
-                                    FocusUtils(context).unfocus();
-                                    _isMale = true;
-                                  });
-                                },
-                              ),
+                          const Gap(),
+                          Expanded(
+                            child: ButtonPrimary(
+                              "Female",
+                              buttonColor: _isMale
+                                  ? ButtonColors.tertiary
+                                  : ButtonColors.secondary,
+                              borderColor: _isMale
+                                  ? ButtonColors.primary
+                                  : ButtonColors.secondary,
+                              labelColor: _isMale
+                                  ? TextColors.primary
+                                  : TextColors.tertiary,
+                              onPressed: () {
+                                setState(() {
+                                  FocusUtils(context).unfocus();
+                                  _isMale = false;
+                                });
+                              },
                             ),
-                            const Gap(),
-                            Expanded(
-                              child: ButtonPrimary(
-                                "Female",
-                                buttonColor: _isMale
-                                    ? ButtonColors.tertiary
-                                    : ButtonColors.secondary,
-                                borderColor: _isMale
-                                    ? ButtonColors.primary
-                                    : ButtonColors.secondary,
-                                labelColor: _isMale
-                                    ? TextColors.primary
-                                    : TextColors.tertiary,
-                                onPressed: () {
-                                  setState(() {
-                                    FocusUtils(context).unfocus();
-                                    _isMale = false;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(
-                          height: AppGap.big,
-                        ),
-                        ButtonPrimary(
-                          "Submit",
-                          width: double.infinity,
-                          buttonColor: ButtonColors.primary,
-                          onPressed: _handleSubmit,
-                        ),
-                        const Gap(
-                          height: AppGap.large,
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                      const Gap(
+                        height: AppGap.big,
+                      ),
+                      ButtonPrimary(
+                        "Submit",
+                        width: double.infinity,
+                        buttonColor: ButtonColors.primary,
+                        onPressed: _handleSubmit,
+                      ),
+                      const Gap(
+                        height: AppGap.large,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -331,4 +336,7 @@ class _ProfilePageWrapperState extends State<ProfilePageWrapper> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

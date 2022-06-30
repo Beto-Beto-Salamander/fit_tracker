@@ -7,6 +7,8 @@ class MessageConstant {
 
   static const heightInvalid = "Height must be greater than 0.";
 
+  static const weightInvalid = "Weight must be greater than 0.";
+
   static const error = "Hmmm... something went wrong";
 
   //LOADING

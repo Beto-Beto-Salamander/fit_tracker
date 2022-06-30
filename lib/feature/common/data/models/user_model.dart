@@ -23,8 +23,8 @@ class UserModel {
         gender: json["gender"] as String? ?? "-",
         dateOfBirth: json['date_of_birth'] as String? ?? "-",
         height: json["height"] as int? ?? 0,
-        weightRecords: (json["weight_records"] as List)
-            .map((e) => WeightRecordModel.fromJson(e as Map<String, dynamic>))
+        weightRecords: (json["weight_records"] as List?)
+            ?.map((e) => WeightRecordModel.fromJson(e as Map<String, dynamic>))
             .toList(),
       );
 

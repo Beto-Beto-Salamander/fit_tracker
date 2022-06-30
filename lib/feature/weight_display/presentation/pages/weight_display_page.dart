@@ -1,9 +1,7 @@
-import 'package:fit_tracker/feature/profile/presentation/cubit/firestore_cubit.dart';
+import 'package:fit_tracker/di_container.dart';
 import 'package:fit_tracker/lib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../common/presentation/widget/dialog/dialog_confirmation.dart';
 
 class WeightDisplayPage extends StatelessWidget {
   const WeightDisplayPage({
@@ -13,7 +11,7 @@ class WeightDisplayPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => FirestoreCubit()..get(),
+      create: (context) => WeightRecordCubit(sl()),
       child: const WeightDisplayPageWrapper(),
     );
   }
@@ -27,10 +25,11 @@ class WeightDisplayPageWrapper extends StatefulWidget {
       _WeightDisplayPageWrapperState();
 }
 
-class _WeightDisplayPageWrapperState extends State<WeightDisplayPageWrapper> {
+class _WeightDisplayPageWrapperState extends State<WeightDisplayPageWrapper>
+    with AutomaticKeepAliveClientMixin {
   final TextFieldEntity _textFieldEntity = TextFieldEntity.weight;
 
-  void _handleDeleteWeight(DeleteWeightParams params) {
+  void _handleDeleteWeight(WeightRecordEntity params) {
     BasePopup(context).dialog(
       child: DialogConfirmation(
         title: "Delete this one ?",
@@ -38,7 +37,7 @@ class _WeightDisplayPageWrapperState extends State<WeightDisplayPageWrapper> {
         positiveButtonText: "Yes, delete",
         negativeButtonText: "No, cancel",
         positiveButtonAction: () async {
-          context.read<FirestoreCubit>().deleteWeight(params);
+          context.read<WeightRecordCubit>().delete(params);
           Navigator.pop(context, true);
         },
         negativeButtonAction: () {
@@ -57,13 +56,13 @@ class _WeightDisplayPageWrapperState extends State<WeightDisplayPageWrapper> {
         negativeButtonText: "Cancel",
         textFieldEntity: _textFieldEntity,
         positiveButtonAction: () async {
-          context.read<FirestoreCubit>().updateWeight(
-                WeightRecordEntity(
+          context.read<WeightRecordCubit>().update(
+                oldValue: WeightRecordEntity(
                   weight: data.weight,
                   recordedDate: data.recordedDate,
                   location: data.location,
                 ),
-                WeightRecordEntity(
+                newValue: WeightRecordEntity(
                   weight: int.parse(_textFieldEntity.textController.text),
                   recordedDate: data.recordedDate,
                   location: data.location,
@@ -80,11 +79,18 @@ class _WeightDisplayPageWrapperState extends State<WeightDisplayPageWrapper> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    context.read<WeightRecordCubit>().get();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ScaffoldWrapper(
       child: Scaffold(
         backgroundColor: WrapperColors.white,
-        appBar: AppBarSecondary(
+        appBar: AppBarPrimary(
           "Weight records",
           onTapBack: () {
             Navigator.pop(context, true);
@@ -95,21 +101,32 @@ class _WeightDisplayPageWrapperState extends State<WeightDisplayPageWrapper> {
             const SliverGap(
               height: AppGap.big,
             ),
-            BlocBuilder<FirestoreCubit, FirestoreState>(
+            const SliverToBoxAdapter(),
+            BlocBuilder<WeightRecordCubit, WeightRecordState>(
               builder: (context, state) {
-                if (state is FirestoreLoading) {
+                if (state is WeightRecordLoading) {
                   return const SliverToBoxAdapter(
                     child: ScreenSizeLoadingIndicator(),
                   );
-                } else if (state is FirestoreLoaded) {
-                  if (state.user?.weightRecords == null) {
-                    return SliverToBoxAdapter(
-                      child: Text(
-                        "No data found",
-                        style: AppTextStyle.bold.copyWith(
-                          fontSize: AppFontSize.large,
+                } else if (state is WeightRecordLoaded) {
+                  if (state.weightRecords?.isEmpty ?? true) {
+                    return SliverColumnPadding(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "😱",
+                          style: AppTextStyle.bold.copyWith(
+                            fontSize: AppFontSize.extraBig,
+                          ),
                         ),
-                      ),
+                        Text(
+                          "No data found",
+                          textAlign: TextAlign.center,
+                          style: AppTextStyle.bold.copyWith(
+                            fontSize: AppFontSize.large,
+                          ),
+                        ),
+                      ],
                     );
                   } else {
                     return SliverToBoxAdapter(
@@ -117,22 +134,22 @@ class _WeightDisplayPageWrapperState extends State<WeightDisplayPageWrapper> {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         padding: EdgeInsets.zero,
-                        itemCount: state.user?.weightRecords?.length ?? 0,
+                        itemCount: state.weightRecords?.length ?? 0,
                         separatorBuilder: (context, index) => const Divider(
                           height: 0,
                           color: AppColors.oxfordBlue,
                         ),
                         itemBuilder: (BuildContext context, int index) {
-                          state.user?.weightRecords?.sort(
+                          state.weightRecords?.sort(
                             (a, b) => b.recordedDate.compareTo(a.recordedDate),
                           );
-                          final record = state.user?.weightRecords?[index];
+                          final record = state.weightRecords?[index];
                           return WeightDisplayRow(
                             weightRecord: record,
                             index: index,
                             onTapDelete: () {
                               _handleDeleteWeight(
-                                DeleteWeightParams(data: record!),
+                                record!,
                               );
                             },
                             onTapEdit: () {
@@ -145,7 +162,7 @@ class _WeightDisplayPageWrapperState extends State<WeightDisplayPageWrapper> {
                       ),
                     );
                   }
-                } else if (state is FirestoreError) {
+                } else if (state is WeightRecordError) {
                   return SliverToBoxAdapter(
                     child: Text(
                       "No data found",
@@ -155,7 +172,14 @@ class _WeightDisplayPageWrapperState extends State<WeightDisplayPageWrapper> {
                     ),
                   );
                 } else {
-                  return const SliverToBoxAdapter();
+                  return SliverToBoxAdapter(
+                    child: Text(
+                      "No data found",
+                      style: AppTextStyle.bold.copyWith(
+                        fontSize: AppFontSize.large,
+                      ),
+                    ),
+                  );
                 }
               },
             ),
@@ -164,4 +188,7 @@ class _WeightDisplayPageWrapperState extends State<WeightDisplayPageWrapper> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

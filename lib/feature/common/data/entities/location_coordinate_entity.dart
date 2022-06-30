@@ -22,6 +22,20 @@ class LocationCoordinateEntity extends Equatable {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'latitude': latitude,
+      'longitude': longitude,
+    };
+  }
+
+  static LocationCoordinateEntity fromMap(Map<String, dynamic> map) {
+    return LocationCoordinateEntity(
+      latitude: map['latitude'] as double,
+      longitude: map['longitude'] as double,
+    );
+  }
+
   @override
   bool get stringify => true;
 }

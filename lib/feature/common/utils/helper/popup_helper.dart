@@ -10,7 +10,7 @@ class BasePopup {
   void dialog({required Widget child}) {
     showDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: false,
       builder: (context) {
         return child;
       },

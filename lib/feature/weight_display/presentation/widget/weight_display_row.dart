@@ -87,12 +87,11 @@ class WeightDisplayRow extends StatelessWidget {
           child: ButtonIcon(
             onTap: _onTapDelete,
             buttonSize: AppButtonSize.small,
-            backgroundColor: AppColors.red,
             child: Icon(
               Icons.delete,
-              color: AppColors.white,
+              color: AppColors.red,
               size: responsive.getResponsiveSize(
-                AppIconSize.small,
+                AppIconSize.medium,
               ),
             ),
           ),
@@ -103,12 +102,11 @@ class WeightDisplayRow extends StatelessWidget {
           child: ButtonIcon(
             onTap: _onTapEdit,
             buttonSize: AppButtonSize.small,
-            backgroundColor: AppColors.manatee,
             child: Icon(
               Icons.edit_rounded,
-              color: AppColors.white,
+              color: AppColors.manatee,
               size: responsive.getResponsiveSize(
-                AppIconSize.small,
+                AppIconSize.medium,
               ),
             ),
           ),

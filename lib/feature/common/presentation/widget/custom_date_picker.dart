@@ -8,8 +8,6 @@ import 'package:flutter/widgets.dart' as context;
 extension CustomDatePicker on context.BuildContext {
   Future<void> selectDate({
     required DateTime initialDate,
-    required DateTime first,
-    DateTime? last,
     required Function(DateTime?) onPicked,
   }) async {
     final responsive = ResponsiveUtils(this);
@@ -20,8 +18,8 @@ extension CustomDatePicker on context.BuildContext {
         context: this,
         // locale: const Locale("id", "ID"),
         initialDate: initialDate,
-        firstDate: first,
-        lastDate: last ?? DateTime(DateTime.now().year + 1),
+        firstDate: DateTime(1950),
+        lastDate: DateTime.now(),
         builder: (context, child) {
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(
@@ -74,7 +72,7 @@ extension CustomDatePicker on context.BuildContext {
                     height: AppGap.medium,
                   ),
                   Text(
-                    "Pilih tanggal".toUpperCase(),
+                    "Select date".toUpperCase(),
                     style: AppTextStyle.bold.copyWith(
                       fontSize: responsive.getResponsiveSize(
                         AppFontSize.medium,
@@ -93,9 +91,9 @@ extension CustomDatePicker on context.BuildContext {
                         picked = val;
                       },
                       // minimumDate: first,
-                      maximumDate: last ?? DateTime(DateTime.now().year + 1),
-                      maximumYear: initialDate.year,
-                      minimumYear: initialDate.year,
+                      maximumDate: DateTime.now(),
+                      maximumYear: DateTime.now().year,
+                      minimumYear: 1950,
                     ),
                   ),
                   const Gap(
