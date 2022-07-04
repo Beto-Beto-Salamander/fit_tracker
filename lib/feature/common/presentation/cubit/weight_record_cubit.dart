@@ -28,16 +28,36 @@ class WeightRecordCubit extends Cubit<WeightRecordState> {
   Future<void> store(WeightRecordEntity params) async {
     emit(WeightRecordLoading());
 
-    final response = await _weightRecordRepository.store(params);
+    bool isInputValid() {
+      if (params.weight.toString().trim().isEmpty ||
+          params.weight <= 0 ||
+          params.recordedDate.toString().trim().isEmpty) {
+        return false;
+      } else {
+        return true;
+      }
+    }
 
-    response.fold(
-      (failure) {
-        emit(WeightRecordError(failure: failure));
-      },
-      (record) {
-        emit(WeightRecordLoaded(weightRecords: record));
-      },
-    );
+    if (isInputValid()) {
+      final response = await _weightRecordRepository.store(params);
+
+      response.fold(
+        (failure) {
+          emit(WeightRecordError(failure: failure));
+        },
+        (record) {
+          emit(WeightRecordLoaded(weightRecords: record));
+        },
+      );
+    } else {
+      emit(
+        const WeightRecordError(
+          failure: Failure(
+            message: MessageConstant.emptyInputField,
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> update(
@@ -45,17 +65,37 @@ class WeightRecordCubit extends Cubit<WeightRecordState> {
       required WeightRecordEntity newValue}) async {
     emit(WeightRecordLoading());
 
-    final response = await _weightRecordRepository.update(
-        oldValue: oldValue, newValue: newValue);
+    bool isInputValid() {
+      if (newValue.weight.toString().trim().isEmpty ||
+          newValue.weight <= 0 ||
+          newValue.recordedDate.toString().trim().isEmpty) {
+        return false;
+      } else {
+        return true;
+      }
+    }
 
-    response.fold(
-      (failure) {
-        emit(WeightRecordError(failure: failure));
-      },
-      (record) {
-        emit(WeightRecordLoaded(weightRecords: record));
-      },
-    );
+    if (isInputValid()) {
+      final response = await _weightRecordRepository.update(
+          oldValue: oldValue, newValue: newValue);
+
+      response.fold(
+        (failure) {
+          emit(WeightRecordError(failure: failure));
+        },
+        (record) {
+          emit(WeightRecordLoaded(weightRecords: record));
+        },
+      );
+    } else {
+      emit(
+        const WeightRecordError(
+          failure: Failure(
+            message: MessageConstant.emptyInputField,
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> delete(WeightRecordEntity params) async {

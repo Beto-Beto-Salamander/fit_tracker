@@ -10,8 +10,14 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   ProfileCubit(this._profileRepository) : super(ProfileInitial());
 
-  Future<void> get() async {
+  Future<void> get(String params) async {
     emit(ProfileLoading());
+
+    final currentState = sl<UserCubit>().state;
+
+    sl<UserCubit>().emit(
+      currentState.copyWith(email: params),
+    );
 
     final response = await _profileRepository.get();
 
@@ -20,15 +26,26 @@ class ProfileCubit extends Cubit<ProfileState> {
         emit(ProfileError(failure: failure));
       },
       (user) async {
-        await sl<UserCubit>().delete(user?.email ?? "");
         await sl<UserCubit>().store(
-          UserEntity(email: user?.email ?? ""),
+          UserEntity(email: params),
         );
-        final currentState = sl<UserCubit>().state;
-        sl<UserCubit>().emit(
-          currentState.copyWith(email: user?.email, user: user),
-        );
-        emit(ProfileLoaded(user: user));
+
+        if (user != null) {
+          sl<UserCubit>().emit(
+            currentState.copyWith(email: user.email, user: user),
+          );
+        } else {
+          sl<UserCubit>().emit(
+            currentState.copyWith(
+              email: params,
+              user: UserEntity(email: params),
+            ),
+          );
+        }
+
+        emit(ProfileLoaded(
+          user: sl<UserCubit>().state.user,
+        ));
       },
     );
   }
@@ -36,46 +53,86 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> update(UserEntity params) async {
     emit(ProfileLoading());
 
-    final response = await _profileRepository.store(params);
+    bool isInputValid() {
+      if (params.gender.toString().trim().isEmpty ||
+          params.dateOfBirth.toString().trim().isEmpty ||
+          params.name.toString().trim().isEmpty ||
+          (params.height ?? 0) <= 0 ||
+          params.height == null) {
+        return false;
+      } else {
+        return true;
+      }
+    }
 
-    response.fold(
-      (failure) {
-        emit(ProfileError(failure: failure));
-      },
-      (collectionId) async {
-        await sl<UserCubit>().delete(params.email);
-        await sl<UserCubit>().store(
-          UserEntity(email: params.email),
-        );
-        final currentState = sl<UserCubit>().state;
-        sl<UserCubit>().emit(
-          currentState.copyWith(email: params.email, user: params),
-        );
-        emit(ProfileLoaded(collectionId: collectionId));
-      },
-    );
+    if (isInputValid()) {
+      final response = await _profileRepository.store(params);
+
+      response.fold(
+        (failure) {
+          emit(ProfileError(failure: failure));
+        },
+        (collectionId) async {
+          await sl<UserCubit>().delete(params.email);
+          await sl<UserCubit>().store(
+            UserEntity(email: params.email),
+          );
+          final currentState = sl<UserCubit>().state;
+          sl<UserCubit>().emit(
+            currentState.copyWith(email: params.email, user: params),
+          );
+          emit(ProfileLoaded(collectionId: collectionId));
+        },
+      );
+    } else {
+      emit(
+        const ProfileError(
+          failure: Failure(message: MessageConstant.error),
+        ),
+      );
+    }
   }
 
   Future<void> store(UserEntity params) async {
     emit(ProfileLoading());
 
-    final response = await _profileRepository.store(params);
+    bool isInputValid() {
+      if (params.gender.toString().trim().isEmpty ||
+          params.dateOfBirth.toString().trim().isEmpty ||
+          params.name.toString().trim().isEmpty ||
+          (params.height ?? 0) <= 0 ||
+          params.height == null) {
+        return false;
+      } else {
+        return true;
+      }
+    }
 
-    response.fold(
-      (failure) {
-        emit(ProfileError(failure: failure));
-      },
-      (collectionId) async {
-        await sl<UserCubit>().delete(params.email);
-        await sl<UserCubit>().store(
-          UserEntity(email: params.email),
-        );
-        final currentState = sl<UserCubit>().state;
-        sl<UserCubit>().emit(
-          currentState.copyWith(email: params.email, user: params),
-        );
-        emit(ProfileLoaded(collectionId: collectionId));
-      },
-    );
+    if (isInputValid()) {
+      final response = await _profileRepository.store(params);
+
+      response.fold(
+        (failure) {
+          emit(ProfileError(failure: failure));
+        },
+        (collectionId) async {
+          await sl<UserCubit>().delete(params.email);
+          await sl<UserCubit>().store(
+            UserEntity(email: params.email),
+          );
+          final currentState = sl<UserCubit>().state;
+          sl<UserCubit>().emit(
+            currentState.copyWith(email: params.email, user: params),
+          );
+          emit(ProfileLoaded(collectionId: collectionId));
+        },
+      );
+    } else {
+      emit(
+        const ProfileError(
+          failure: Failure(message: MessageConstant.error),
+        ),
+      );
+    }
   }
 }

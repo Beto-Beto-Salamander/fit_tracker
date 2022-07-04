@@ -5,5 +5,6 @@ import 'package:intl/intl.dart';
 extension DateTimeFormatterUtils on DateTime {
   DateTime getDateOnly() => DateTime(year, month, day);
 
-  String getDateFullFormat() => DateFormat('EEEE, dd MMMM yyyy').format(this);
+  String getDateFullFormat({bool withDay = false}) =>
+      DateFormat('${withDay ? "EEEE," : ""} dd MMMM yyyy').format(this);
 }

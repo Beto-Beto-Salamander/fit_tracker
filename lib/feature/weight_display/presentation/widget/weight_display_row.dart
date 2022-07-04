@@ -46,28 +46,25 @@ class WeightDisplayRow extends StatelessWidget {
         const Gap(),
         Expanded(
           flex: 2,
-          child: Center(
-            child: Text(
-              DateTime.parse(_weightRecord?.recordedDate ?? "")
-                  .getDateFullFormat()
-                  .toString(),
-              textAlign: TextAlign.center,
-              style: AppTextStyle.regular.copyWith(
-                fontSize: AppFontSize.small,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                DateTime.parse(_weightRecord?.recordedDate ?? "")
+                    .getDateFullFormat(withDay: false)
+                    .toString(),
+                textAlign: TextAlign.center,
+                style: AppTextStyle.regular.copyWith(
+                  fontSize: AppFontSize.small,
+                ),
               ),
-            ),
-          ),
-        ),
-        const Gap(),
-        Expanded(
-          flex: 2,
-          child: Center(
-            child: Text(
-              "${_weightRecord?.weight ?? 0} kg",
-              style: AppTextStyle.medium.copyWith(
-                fontSize: AppFontSize.normal,
+              Text(
+                "${_weightRecord?.weight ?? 0} kg",
+                style: AppTextStyle.medium.copyWith(
+                  fontSize: AppFontSize.normal,
+                ),
               ),
-            ),
+            ],
           ),
         ),
         const Gap(),

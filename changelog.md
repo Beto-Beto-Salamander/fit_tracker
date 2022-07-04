@@ -2,6 +2,9 @@
 **Updated:**
 - rebuild 
 
+**Fixed:**
+- bug at profile cubit
+
 ### v0.2.0 (22-06-2022)
 **Added:**
 - store profile to firestore

@@ -13,44 +13,85 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> login(AuthParams params) async {
     emit(AuthLoading());
 
-    final response = await _authRepository.login(params);
+    bool isInputValid() {
+      if (params.email.toString().trim().isEmpty ||
+          params.password.toString().trim().isEmpty) {
+        return false;
+      } else {
+        return true;
+      }
+    }
 
-    response.fold(
-      (failure) {
-        emit(AuthError(failure: failure));
-      },
-      (user) async {
-        await sl<UserCubit>().deleteAll();
-        await sl<UserCubit>().store(
-          UserEntity(email: user.email!),
-        );
-        final currentState = sl<UserCubit>().state;
-        sl<UserCubit>().emit(
-          currentState.copyWith(email: user.email),
-        );
-        emit(AuthLoaded(email: user.email));
-      },
-    );
+    if (isInputValid()) {
+      final response = await _authRepository.login(params);
+
+      response.fold(
+        (failure) {
+          emit(AuthError(failure: failure));
+        },
+        (user) async {
+          await sl<UserCubit>().deleteAll();
+          await sl<UserCubit>().store(
+            UserEntity(email: user.email!),
+          );
+          final currentState = sl<UserCubit>().state;
+          sl<UserCubit>().emit(
+            currentState.copyWith(email: user.email),
+          );
+          emit(AuthLoaded(email: user.email));
+        },
+      );
+    } else {
+      emit(
+        const AuthError(
+          failure: Failure(
+            message: MessageConstant.error,
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> signup(AuthParams params) async {
     emit(AuthLoading());
 
-    final response = await _authRepository.signup(params);
+    bool isInputValid() {
+      if (params.email.toString().trim().isEmpty ||
+          params.password.toString().trim().isEmpty) {
+        return false;
+      } else {
+        return true;
+      }
+    }
 
-    response.fold(
-      (failure) {
-        emit(AuthError(failure: failure));
-      },
-      (_) {
-        emit(const AuthLoaded());
-      },
-    );
+    if (isInputValid()) {
+      final response = await _authRepository.signup(params);
+
+      response.fold(
+        (failure) {
+          emit(AuthError(failure: failure));
+        },
+        (_) {
+          emit(const AuthLoaded());
+        },
+      );
+    } else {
+      emit(
+        const AuthError(
+          failure: Failure(
+            message: MessageConstant.error,
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> logout() async {
     await _authRepository.logout();
-
     await sl<UserCubit>().deleteAll();
+    final currentState = sl<UserCubit>().state;
+    sl<UserCubit>().emit(
+      currentState.copyWith(email: "-"),
+    );
   }
 }

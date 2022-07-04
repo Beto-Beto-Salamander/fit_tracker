@@ -15,11 +15,10 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
-      sl<UserCubit>()
-          .state
-          .copyWith(email: FirebaseAuth.instance.currentUser?.email);
-
       if (FirebaseAuth.instance.currentUser?.email != null) {
+        sl<UserCubit>()
+            .state
+            .copyWith(email: FirebaseAuth.instance.currentUser?.email);
         Navigator.of(context).pushReplacementNamed(
           PagePath.home,
           arguments: FirebaseAuth.instance.currentUser?.email,

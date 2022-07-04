@@ -136,12 +136,14 @@ class _ProfilePageWrapperState extends State<ProfilePageWrapper>
         positiveButtonText: "Yes, logout",
         negativeButtonText: "No, cancel",
         positiveButtonAction: () async {
-          context.read<AuthCubit>().logout();
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            PagePath.signIn,
-            (route) => false,
-          );
+          context
+              .read<AuthCubit>()
+              .logout()
+              .then((value) => Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    PagePath.signIn,
+                    (route) => false,
+                  ));
         },
         negativeButtonAction: () {
           Navigator.pop(context);
@@ -160,7 +162,7 @@ class _ProfilePageWrapperState extends State<ProfilePageWrapper>
         appBar: AppBarPrimary(
           "Profile Page",
           onTapBack: () {
-            Navigator.pop(context);
+            Navigator.pop(context, true);
           },
           action: Padding(
             padding: EdgeInsets.symmetric(

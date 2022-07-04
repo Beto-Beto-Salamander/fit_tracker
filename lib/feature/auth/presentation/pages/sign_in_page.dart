@@ -87,7 +87,7 @@ class _SignInPageWrapperState extends State<SignInPageWrapper> {
                       context,
                       PagePath.home,
                       (route) => false,
-                      arguments: FirebaseAuth.instance.currentUser?.email,
+                      arguments: _textFieldlist[0].textController.text,
                     );
                   },
                 ),

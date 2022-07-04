@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_tracker/di_container.dart';
 import 'package:fit_tracker/lib.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +21,7 @@ class HomePage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => ProfileCubit(sl())..get(),
+          create: (context) => ProfileCubit(sl())..get(_args),
         ),
         BlocProvider(
           create: (context) => WeightRecordCubit(sl()),
@@ -42,8 +45,7 @@ class HomePageWrapper extends StatefulWidget {
   State<HomePageWrapper> createState() => _HomePageWrapperState();
 }
 
-class _HomePageWrapperState extends State<HomePageWrapper>
-    with AutomaticKeepAliveClientMixin {
+class _HomePageWrapperState extends State<HomePageWrapper> {
   //Form
   final List<TextFieldEntity> _textFieldlist = TextFieldEntity.weightRecord;
   final GlobalKey _formKey = GlobalKey<FormState>();
@@ -58,7 +60,9 @@ class _HomePageWrapperState extends State<HomePageWrapper>
       i.textController = TextEditingController();
     }
 
-    // sl<UserCubit>().get(widget._args);
+    inspect(widget._args);
+    inspect(sl<UserCubit>().state);
+    inspect(FirebaseAuth.instance.currentUser);
 
     _textFieldlist[0].textController.text =
         DateTime.now().getDateFullFormat().toString();
@@ -94,7 +98,7 @@ class _HomePageWrapperState extends State<HomePageWrapper>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    // super.build(context);
     final responsive = ResponsiveUtils(context);
 
     return ScaffoldWrapper(
@@ -278,8 +282,8 @@ class _HomePageWrapperState extends State<HomePageWrapper>
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
+  // @override
+  // bool get wantKeepAlive => true;
 }
 
 class CardCompleteYourProfile extends StatelessWidget {
