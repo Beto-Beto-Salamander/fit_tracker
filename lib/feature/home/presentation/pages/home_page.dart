@@ -18,10 +18,10 @@ class HomePage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => sl<ProfileCubit>(),
+          create: (context) => ProfileCubit(sl())..get(),
         ),
         BlocProvider(
-          create: (context) => sl<WeightRecordCubit>(),
+          create: (context) => WeightRecordCubit(sl()),
         ),
       ],
       child: HomePageWrapper(args: _args),
@@ -54,13 +54,12 @@ class _HomePageWrapperState extends State<HomePageWrapper>
   @override
   void initState() {
     super.initState();
-    // for (final i in _textFieldlist) {
-    //   i.textController = TextEditingController();
-    // }
+    for (final i in _textFieldlist) {
+      i.textController = TextEditingController();
+    }
 
-    sl<UserCubit>().get(widget._args);
-    sl<ProfileCubit>().get();
-    
+    // sl<UserCubit>().get(widget._args);
+
     _textFieldlist[0].textController.text =
         DateTime.now().getDateFullFormat().toString();
   }
@@ -164,13 +163,13 @@ class _HomePageWrapperState extends State<HomePageWrapper>
                     );
                   } else if (state is ProfileLoaded) {
                     if (state.user == null) {
-                      return SliverToBoxAdapter(
-                        child: Text(
-                          "No user found",
-                          style: AppTextStyle.bold.copyWith(
-                            fontSize: AppFontSize.large,
-                          ),
-                        ),
+                      return CardCompleteYourProfile(
+                        onPress: () {
+                          Navigator.pushNamed(
+                            context,
+                            PagePath.profile,
+                          );
+                        },
                       );
                     } else {
                       return Form(
@@ -268,14 +267,7 @@ class _HomePageWrapperState extends State<HomePageWrapper>
                       },
                     );
                   } else {
-                    return CardCompleteYourProfile(
-                      onPress: () {
-                        Navigator.pushNamed(
-                          context,
-                          PagePath.profile,
-                        );
-                      },
-                    );
+                    return SliverToBoxAdapter();
                   }
                 },
               ),

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_tracker/di_container.dart';
 import 'package:fit_tracker/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -86,6 +87,7 @@ class _SignInPageWrapperState extends State<SignInPageWrapper> {
                       context,
                       PagePath.home,
                       (route) => false,
+                      arguments: FirebaseAuth.instance.currentUser?.email,
                     );
                   },
                 ),

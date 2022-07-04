@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fit_tracker/di_container.dart';
 import 'package:fit_tracker/lib.dart';
 
 class FirestoreServices {
@@ -7,7 +8,7 @@ class FirestoreServices {
   Future<QuerySnapshot<Map<String, dynamic>>> getDocument() async {
     return await _firestore
         .collection(UrlConstant.baseCollection)
-        .where('email', isEqualTo: FirebaseServices.currentUser()?.email ?? "-")
+        .where('email', isEqualTo: sl<UserCubit>().state.email)
         .limit(1)
         .get();
   }

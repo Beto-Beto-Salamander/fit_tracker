@@ -20,11 +20,15 @@ class AuthCubit extends Cubit<AuthState> {
         emit(AuthError(failure: failure));
       },
       (user) async {
-        emit(AuthLoaded(email: user.email));
         await sl<UserCubit>().deleteAll();
         await sl<UserCubit>().store(
           UserEntity(email: user.email!),
         );
+        final currentState = sl<UserCubit>().state;
+        sl<UserCubit>().emit(
+          currentState.copyWith(email: user.email),
+        );
+        emit(AuthLoaded(email: user.email));
       },
     );
   }

@@ -6,7 +6,7 @@ class ProfileRepository with BaseRepository implements BaseProfileRepository {
   @override
   Future<Either<Failure, UserEntity?>> get() async {
     return catchOrThrow(() async {
-      if (!await FirestoreServices().isExist()) {
+      if (await FirestoreServices().isExist()) {
         final result = await FirestoreServices().getDocument();
         final user = UserModel.fromJson(result.docs.first.data()).toEntity();
 

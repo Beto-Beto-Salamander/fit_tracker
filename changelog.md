@@ -1,3 +1,7 @@
+### v0.2.0 (31-06-2022)
+**Updated:**
+- rebuild 
+
 ### v0.2.0 (22-06-2022)
 **Added:**
 - store profile to firestore

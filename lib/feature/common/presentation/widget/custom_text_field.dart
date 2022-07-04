@@ -45,6 +45,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
 
   @override
   void initState() {
+    super.initState();
     _isObscureText = widget._textFieldEntity.isPassword;
 
     widget._textFieldEntity.focusNode?.addListener(() {
@@ -53,9 +54,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         widget._textFieldEntity.focusNode?.unfocus();
       }
     });
-
-    super.initState();
   }
+
+  
 
   @override
   Widget build(BuildContext context) {

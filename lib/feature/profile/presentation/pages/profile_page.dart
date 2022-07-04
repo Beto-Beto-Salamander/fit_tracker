@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_tracker/di_container.dart';
 import 'package:fit_tracker/lib.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +17,7 @@ class ProfilePage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => ProfileCubit(sl())..get(),
+          create: (context) => ProfileCubit(sl()),
         ),
         BlocProvider(
           create: (context) => AuthCubit(sl()),
@@ -52,29 +55,31 @@ class _ProfilePageWrapperState extends State<ProfilePageWrapper>
     for (final i in _textFieldlist) {
       i.textController = TextEditingController();
     }
+
     _initTextField();
 
     setState(() {});
   }
 
   void _initTextField() async {
-    final user = sl<UserCubit>().state.user;
-    if (user?.dateOfBirth.toString().trim().isNotEmpty ?? true) {
+    final userCubit = sl<UserCubit>().state;
+
+    if (userCubit.user != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _textFieldlist[0].textController.text = user?.email ?? "";
-        _textFieldlist[1].textController.text = user?.name ?? "-";
+        _textFieldlist[0].textController.text = userCubit.user?.email ?? "";
+        _textFieldlist[1].textController.text = userCubit.user?.name ?? "-";
         _textFieldlist[2].textController.text =
-            (user?.dateOfBirth.toString().trim().isEmpty ?? true)
+            (userCubit.user?.dateOfBirth.toString().trim().isEmpty ?? true)
                 ? "-"
-                : DateTime.parse(user?.dateOfBirth ?? "")
+                : DateTime.parse(userCubit.user?.dateOfBirth ?? "")
                     .getDateFullFormat()
                     .toString();
-        _textFieldlist[3].textController.text = (user?.height ?? 0).toString();
-        _isMale = user?.gender == "male";
+        _textFieldlist[3].textController.text =
+            (userCubit.user?.height ?? 0).toString();
       });
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _textFieldlist[0].textController.text = user?.email ?? "-";
+        _textFieldlist[0].textController.text = userCubit.email ?? "-";
       });
     }
   }

@@ -19,10 +19,14 @@ class ProfileCubit extends Cubit<ProfileState> {
       (failure) {
         emit(ProfileError(failure: failure));
       },
-      (user) {
+      (user) async {
+        await sl<UserCubit>().delete(user?.email ?? "");
+        await sl<UserCubit>().store(
+          UserEntity(email: user?.email ?? ""),
+        );
         final currentState = sl<UserCubit>().state;
         sl<UserCubit>().emit(
-          currentState.copyWith(user: user),
+          currentState.copyWith(email: user?.email, user: user),
         );
         emit(ProfileLoaded(user: user));
       },
@@ -38,10 +42,14 @@ class ProfileCubit extends Cubit<ProfileState> {
       (failure) {
         emit(ProfileError(failure: failure));
       },
-      (collectionId) {
+      (collectionId) async {
+        await sl<UserCubit>().delete(params.email);
+        await sl<UserCubit>().store(
+          UserEntity(email: params.email),
+        );
         final currentState = sl<UserCubit>().state;
         sl<UserCubit>().emit(
-          currentState.copyWith(user: params),
+          currentState.copyWith(email: params.email, user: params),
         );
         emit(ProfileLoaded(collectionId: collectionId));
       },
@@ -57,10 +65,14 @@ class ProfileCubit extends Cubit<ProfileState> {
       (failure) {
         emit(ProfileError(failure: failure));
       },
-      (collectionId) {
+      (collectionId) async {
+        await sl<UserCubit>().delete(params.email);
+        await sl<UserCubit>().store(
+          UserEntity(email: params.email),
+        );
         final currentState = sl<UserCubit>().state;
         sl<UserCubit>().emit(
-          currentState.copyWith(user: params),
+          currentState.copyWith(email: params.email, user: params),
         );
         emit(ProfileLoaded(collectionId: collectionId));
       },

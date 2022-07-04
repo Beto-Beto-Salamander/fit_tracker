@@ -12,10 +12,10 @@ class UserEntity extends Equatable {
 
   const UserEntity({
     required this.email,
-    this.name,
-    this.gender,
-    this.height,
-    this.dateOfBirth,
+    this.name = "-",
+    this.gender = "male",
+    this.height = 0,
+    this.dateOfBirth = "1000-00-00 00:00:00",
     this.weightRecords,
   });
 
